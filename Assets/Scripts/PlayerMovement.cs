@@ -5,16 +5,20 @@ public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
     private InputAction moveAction;
+    private InputAction jumpAction;
+    private float verticalVelocity;
 
     const float PlayerSpeed = 5;
     const float Gravity = -9.81f;
     const float TurnSpeed = 5760; // degrees per second
-    private float verticalVelocity;
+
+    const float JumpHeight = 0.5f; // in meters
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         moveAction = InputSystem.actions.FindAction("Move");
+        jumpAction = InputSystem.actions.FindAction("Jump");
     }
 
 
@@ -48,6 +52,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (controller.isGrounded && verticalVelocity < 0f)
             verticalVelocity = -2f;
+
+        // Jump
+        if (controller.isGrounded && jumpAction.WasPressedThisFrame())
+            verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
 
         verticalVelocity += Gravity * Time.deltaTime;
         movement.y = verticalVelocity;

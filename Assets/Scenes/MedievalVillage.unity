@@ -178,7 +178,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 2.5, y: -3.3, z: -4}
+  m_Center: {x: 2.5, y: -3.25, z: -4}
 --- !u!95 &165969134
 Animator:
   serializedVersion: 7

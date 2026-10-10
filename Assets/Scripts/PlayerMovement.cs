@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     private InputAction moveAction;
     private InputAction jumpAction;
     private float verticalVelocity;
+    private Animator animator;
 
     const float PlayerSpeed = 5;
     const float Gravity = -9.81f;
@@ -16,9 +17,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        // Lock and Hide the curson on Game Tab
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         controller = GetComponent<CharacterController>();
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
+        animator = GetComponentInChildren<Animator>();
     }
 
 
@@ -34,10 +40,17 @@ public class PlayerMovement : MonoBehaviour
     {
         // Read player input
         Vector2 input = moveAction.ReadValue<Vector2>();
-        Vector3 direction = new Vector3(input.x, 0f, input.y);
-        Vector3 movement = Vector3.zero;
 
-        if (direction.sqrMagnitude > 0.01f)
+        // Camera's forward/right flattened on the ground, so looking down doesn't slow you down
+        Transform cam = Camera.main.transform;
+        Vector3 camForward = Vector3.ProjectOnPlane(cam.forward, Vector3.up).normalized;
+        Vector3 camRight = Vector3.ProjectOnPlane(cam.right, Vector3.up).normalized;
+        Vector3 direction = camForward * input.y + camRight * input.x;
+
+        Vector3 movement = Vector3.zero;
+        bool hasMoveInput = direction.sqrMagnitude > 0.01f;
+
+        if (hasMoveInput)
         {
             direction.Normalize();
 
@@ -62,5 +75,7 @@ public class PlayerMovement : MonoBehaviour
         movement.y = verticalVelocity;
 
         controller.Move(movement * Time.deltaTime);
+
+        animator.SetBool("Move", hasMoveInput);
     }
 }

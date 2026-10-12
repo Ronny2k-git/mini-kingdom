@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private float verticalVelocity;
     private Animator animator;
 
-    const float PlayerSpeed = 5;
+    const float PlayerSpeed = 2;
     const float Gravity = -9.81f;
     const float TurnSpeed = 5760; // degrees per second
 
